@@ -17,19 +17,19 @@ Start-Sleep -Seconds 2
 do
 { 
     $timeLeft = (($startTime).AddMinutes($timeoutInMinutes) - (Get-Date))
-    Write-Host "$(($ServerList.GetEnumerator() | ?{$_.value -eq "Complete"}).Count) servers complete out of $($ServerList.count) total servers - $($timeLeft.Minutes) Minutes $($timeLeft.Seconds) seconds left til we hit timeout Period"
+    Write-Verbose "$(($ServerList.GetEnumerator() | ?{$_.value -eq "Complete"}).Count) servers complete out of $($ServerList.count) total servers - $($timeLeft.Minutes) Minutes $($timeLeft.Seconds) seconds left til we hit timeout Period"
 
     #loop the incomplete servers
     foreach($incompleteObject in $ServerList.GetEnumerator() | ?{$_.value -eq "Incomplete"})
     {
         $serverName = $incompleteObject.Key
 
-        Write-Host "Processing $ServerName"
+        Write-Verbose "Processing $ServerName"
 
         #do processing here that eventually marks object complete
         if((Get-Date) -gt $startTime.AddSeconds(30))
         {
-            Write-Host "Marking server $ServerName complete" 
+            Write-Verbose "Marking server $ServerName complete" 
             $ServerList[$ServerName] = "Complete"
         }
     }
