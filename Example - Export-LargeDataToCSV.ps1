@@ -12,7 +12,7 @@
 .MODIFICATIONS
 	2015-00-00  KyleGW	Created script
          
-.EXAMPLCS
+.EXAMPLE
 
 #>
 
