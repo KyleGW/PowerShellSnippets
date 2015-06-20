@@ -63,4 +63,5 @@ function Add-SSLCredential($CN)
 Enable-WSManCredSSP -Role Client -DelegateComputer SERVERNAMEWEWANTTOACCESS
 
 #test the connection
+if(!$credential){$credential = Get-Credential}
 Enter-PSSession server.domain.local -UseSSL -Cred $credential -authentication CredSSP
