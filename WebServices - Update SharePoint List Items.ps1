@@ -6,7 +6,6 @@
 $listWebServiceURL = "https://sharepoint/sites/test/KyleTest/_vti_bin/Lists.asmx" 
 $listName = "ListName"
 
-
 #setup web service connection
 $cred = Get-Credential
 $ListWS = New-WebServiceProxy $listWebServiceURL -cred $cred
@@ -45,35 +44,46 @@ if (-not $Operation)
 
 
 #prepare caml query update [ http://msdn.microsoft.com/en-us/library/websvclists.lists.updatelistitems.aspx ]
-
-#Example Update fields
-$item = @{
-		  Title = "2016 01 19 added via PS/WS"
-		}
-        
-$xml = @" 
+$xmlTemplateForUpdate = @" 
 <Batch OnError='Continue' ListVersion='1' ViewName='{0}'>
-    <Method ID='1' Cmd='{1}'>{2}</Method>
+{1}
 </Batch>
 "@
+$ListItemXMLMethodTemplate = "<Method ID='1' Cmd='{0}'>{1}</Method>"
+$listItemUpdateCollection = ""
 
-$listItem = ""
-foreach ($key in $item.Keys) 
-{   
-   $listItem += ("<Field Name='{0}'>{1}</Field>" -f $key,$item[$key])
-}   
+foreach($row in $dataset)
+{
+    #Example Update fields
+    $itemToAdd = @{
+		  Title = "2016 01 19 added via PS/WS"
+		}
+    
+    $listItemFields = ""
+    foreach ($key in $item.Keys) 
+    {   
+       $listItemFields += ("<Field Name='{0}'>{1}</Field>" -f $key,$item[$key])
+    }
 
-$batch = [xml]($xml -f $listInfo.View.Name,$operation,$listItem)
+    $listItemUpdateCollection += $ListItemXMLMethodTemplate -f $Operation, $listItemFields
+       
+}#end looping of dataset
+
+$batchUpdate = [xml]($xmlTemplateForUpdate -f $listInfo.View.Name,$listItemUpdateCollection)
 
 #send the update to the web service
-$response = $ListWS.UpdateListItems($listInfo.List.Name, $batch)
+$response = $ListWS.UpdateListItems($listInfo.List.Name, $batchUpdate)
+
 
 #read the response
-$code = [int]$response.result.errorcode 
-if ($code -ne 0) 
-{  Write-Warning "Error $code - $($response.result.errormessage)" } 
+$errorcode = [int]$response.result.errorcode 
+if ($errorcode -ne 0) 
+{  
+    Write-Warning "Error $errorcode - $($response.result.errormessage)" 
+} 
 else 
-{  Write-Host "List Updated Successfully"
-   $response.Result
+{  
+    Write-Host "List Updated Successfully"
+    $response.Result
 }  
 
