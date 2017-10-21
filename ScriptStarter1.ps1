@@ -19,14 +19,20 @@
 #Load logging Function
 . .\Write-Log.ps1
 
-#$verbose = $true
-$ErrorActionPreference = "Stop"
-$logFilePath = drive:\Scripts\
-$logFileName  = "$env:COMPUTERNAME - WhatIDO.log"
-$LogFile = Join-Path $logFilePath $logFileName
-$TranscriptFileName  = "$env:COMPUTERNAME - WhatIDOTranscript.log"
 
-$0 = split-path -parent $MyInvocation.MyCommand.Definition
+$scriptShortName = "Script Short Name"
+
+$verbose = $true
+$ErrorActionPreference = "Stop"
+$logFilePath = drive:\ScriptLogs
+$logFileName  = "$((Get-Date).ToString("yyyy-MM-dd HHmmss")) - $env:COMPUTERNAME - $scriptShortName.log"
+$LogFile = Join-Path $logFilePath $logFileName
+$TranscriptFileName  = "$((Get-Date).ToString("yyyy-MM-dd HHmmss")) - $env:COMPUTERNAME - $scriptShortName Transcript.log"
+
+if(Test-Path $MyInvocation.MyCommand.Definition)
+{
+    $0 = split-path -parent $MyInvocation.MyCommand.Definition
+}
 
 #Transcripting this session to catch system output that isn't explicitly logged with Write-Log
 $TranscriptFile = $logFilePath+$TranscriptFileName

@@ -1,5 +1,6 @@
-﻿$global:logFilePath = "d:\logs"
-$global:logFileName = "$((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))-LogfileName.log"
+﻿$global:scriptShortName = "Script Short Name"
+$global:logFilePath = "d:\scriptlogs"
+$global:logFileName = "$((Get-Date).ToString("yyyy-MM-dd HHmmss")) - $env:COMPUTERNAME - $scriptShortName.log"
 
 Function Write-Log
 {
@@ -9,7 +10,7 @@ Function Write-Log
     
     if (!(Test-Path -path $logFile ))
     {
-        $logFile = New-Item -type file $logFile
+        $logFile = New-Item -type file $logFile -Force
     }
     Write-Verbose $textToWriteToLog
     Try
