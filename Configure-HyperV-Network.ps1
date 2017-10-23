@@ -10,9 +10,15 @@
     Author     : KyleGW
     Version    : 0.1
 
+    https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/setup-nat-network
     https://blogs.technet.microsoft.com/jhoward/2008/06/17/hyper-v-what-are-the-uses-for-different-types-of-virtual-networks/
     https://blogs.technet.microsoft.com/heyscriptingguy/2013/10/09/use-powershell-to-create-virtual-switches/
-
+    **https://hyperv.veeam.com/blog/how-to-configure-hyper-v-virtual-switch/
+    https://www.petri.com/using-nat-virtual-switch-hyper-v
+    https://4sysops.com/archives/native-nat-in-windows-10-hyper-v-using-a-nat-virtual-switch/
+    
+    * Win 10 post build 16237 - quick create includes default NAT switch
+    https://blogs.technet.microsoft.com/virtualization/2017/07/26/hyper-v-virtual-machine-gallery-and-networking-improvements/
 
 .MODIFICATIONS
 	2017-10-21  KyleGW	Created script
@@ -38,7 +44,7 @@ Function Write-Log
     {
         $logFile = New-Item -type file $logFile -Force
     }
-    Write-Verbose $textToWriteToLog
+    Write-Debug $textToWriteToLog
     Try
     {
         Add-content $logfile -value "$((Get-Date).ToString("yyyy-MM-dd HH:mm:ss.fff")) - $textToWriteToLog"
@@ -51,6 +57,7 @@ Function Write-Log
 
 Function Get-NetworkConfiguration
 {
+    #todo -- update to work with write-debug or verbose instead of direct write to log file
 
     #Gather Information on Existing Configurations
     Write-Log "---------------------------------------------------------------------------------------------"
@@ -69,8 +76,8 @@ Function Get-NetworkConfiguration
 }
 
 $scriptShortName = "HyperV Network Configuration"
-
-$verbose = $true
+$DebugPreference = "Continue"
+$VerbosePreference = "silentlycontinue" #change to Continue/SilentlyContinue to turn on/off verbose messages
 $ErrorActionPreference = "Stop"
 $logFilePath = "d:\Scriptlogs"
 $logFileName  = "$((Get-Date).ToString("yyyy-MM-dd HHmmss")) - $env:COMPUTERNAME - $scriptShortName.log"
@@ -132,6 +139,7 @@ if ($configureSwitchLaptop)
 
 if ($configureSwitchPrivate)
 {
+    As of 
     New-VMSwitch -Name privateSwitch -SwitchType Private -Notes 'Internal VMs only - no connection to host'
     
     Get-NetAdapter
