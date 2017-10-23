@@ -139,7 +139,6 @@ if ($configureSwitchLaptop)
 
 if ($configureSwitchPrivate)
 {
-    As of 
     New-VMSwitch -Name privateSwitch -SwitchType Private -Notes 'Internal VMs only - no connection to host'
     
     Get-NetAdapter
