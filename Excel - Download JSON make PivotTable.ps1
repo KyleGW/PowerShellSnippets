@@ -27,8 +27,13 @@
 #define the url of the data source
 $url = "https://www.nrg.com/generation/asset-map.nrgcontent.default.json"
 
+#need this if connecting behind a proxy
+$webclient = new-object System.Net.WebClient
+$webclient.Headers.Add(“user-agent”, “PowerShell Script”)
+$webclient.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+
 #pull the data down from the url and store the raw json
-$data = [System.Net.WebClient]::new().DownloadString($url) 
+$data = $webclient.DownloadString($url) 
 
 #convert the data from JSON to a ps object
 $converteddata = $data | ConvertFrom-Json 
