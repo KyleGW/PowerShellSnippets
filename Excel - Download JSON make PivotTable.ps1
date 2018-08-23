@@ -28,7 +28,7 @@
 $url = "https://www.nrg.com/generation/asset-map.nrgcontent.default.json"
 
 #pull the data down from the url and store the raw json
-$data = $web_client.DownloadString("$url") 
+$data = [System.Net.WebClient]::new().DownloadString($url) 
 
 #convert the data from JSON to a ps object
 $converteddata = $data | ConvertFrom-Json 
