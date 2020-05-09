@@ -92,7 +92,7 @@ Function Get-DirectReports
         #here we ouput on the fly instead of building an in-memory collection (large dataset processing)
                                         
         #if first line, output header data
-        if($firsttime -ne $false){$Object | ConvertTo-CSV -OutVariable OutData -notype; $OutData[0..0] | ForEach-Object {Add-Content -Value $_ -Path $outputFile};$firsttime = $false }
+        if($firsttime -ne $false){$Object | ConvertTo-CSV -OutVariable OutData -notype; $OutData[0..0] | ForEach-Object {Add-Content -Value $_ -Path $outputFile};$global:firsttime = $false }
                                         
         #convert our object to CSV then output it to the output file without the header line
         $Object | ConvertTo-CSV -OutVariable OutData -notype 
