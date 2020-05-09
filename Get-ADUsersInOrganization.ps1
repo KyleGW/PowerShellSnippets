@@ -62,8 +62,9 @@ Function Get-DirectReports
          $numdirectreports =  $adrecord.properties.directreports.count
          $adrecord.properties.directreports | % {
               $adsearchname = $_
-              $searchstring = ([regex]::Split($adsearchname,'([^,]*,[^,]*)')[1]).replace("\","")
-              Write-Host "Input [$($_)] : Seachring for [$searchstring]"
+              #$searchstring = ([regex]::Split($adsearchname,'([^,]*,[^,]*)')[1]).replace("\","")
+              $searchstring = $adsearchname.split(",")[0]
+              Write-Host "Input [$($_)] : Searching for [$searchstring]"
               Get-DirectReports $searchstring
          }
       }
@@ -77,7 +78,7 @@ Function Get-DirectReports
              department       = [string]$adrecord.properties.department
              hasDirectReports = $($hasreports)
              directreports    = $numdirectreports
-             Manager          = $($adrecord.properties.manager) #need to add regex
+             Manager          = $(($adrecord.properties.manager).split(",")[0]) #need to add regex
              createdate       = [string]$adrecord.properties.whencreated
              account          = [string]$adrecord.properties.samaccountname
              email            = [string]$adrecord.properties.mail
@@ -98,6 +99,10 @@ Function Get-DirectReports
         $OutData[1..($OutData.count - 1)] | ForEach-Object {Add-Content -Value $_ -Path $outputFile}
         $global:numpeopleinorg++
     }
+    else{
+        Write-Host "Did not find $searchstring"
+    }
+
 }
 
 Get-DirectReports $toplevelPerson
